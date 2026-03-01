@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bunny-dns"
+name = "bunny-dns-sync"
 version = "0.1.0"
 description = "Declaratively manage DNS zones, Pull Zones, and Edge Rules on bunny.net"
 readme = "README.md"
@@ -39,9 +39,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mrpesho/bunny-dns"
-Repository = "https://github.com/mrpesho/bunny-dns"
-Issues = "https://github.com/mrpesho/bunny-dns/issues"
+Homepage = "https://github.com/mrpesho/bunny-dns-sync"
+Repository = "https://github.com/mrpesho/bunny-dns-sync"
+Issues = "https://github.com/mrpesho/bunny-dns-sync/issues"
 
 [project.scripts]
 bunny-dns = "bunny_dns.main:main"

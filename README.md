@@ -16,7 +16,7 @@ A Python CLI tool for declaratively managing DNS zones, Pull Zones, and Edge Rul
 ## Installation
 
 ```bash
-uv pip install bunny-dns
+uv pip install bunny-dns-sync
 ```
 
 ## Configuration
@@ -226,7 +226,7 @@ Then update nameservers at your registrar to `kiki.bunny.net` and `coco.bunny.ne
 ## Development
 
 ```bash
-git clone https://github.com/mrpesho/bunny-dns.git
+git clone https://github.com/mrpesho/bunny-dns-sync.git
 cd bunny-dns
 uv pip install -e ".[dev]"
 ```
