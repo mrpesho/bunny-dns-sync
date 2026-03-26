@@ -285,7 +285,8 @@ class DNSManager:
         # Track which current records are matched
         matched_current_ids = set()
 
-        # Find records to create or update
+        # Classify records into create, update, unchanged
+        to_create = []
         for desired_rec in desired:
             found = False
             for current_rec in current:
@@ -304,12 +305,10 @@ class DNSManager:
                         )
                     break
             if not found:
-                desc = f"{desired_rec.type} {desired_rec.name} -> {desired_rec.value}"
-                result["created"].append(desc)
-                if not dry_run:
-                    self.add_record(zone.id, desired_rec)
+                to_create.append(desired_rec)
 
-        # Find records to delete (in current but not in desired)
+        # Delete extra records before creating new ones to avoid conflicts
+        # (e.g. changing www from CNAME to A requires deleting the CNAME first)
         if delete_extra:
             for current_rec in current:
                 if current_rec.id not in matched_current_ids:
@@ -317,5 +316,12 @@ class DNSManager:
                     result["deleted"].append(desc)
                     if not dry_run:
                         self.delete_record(zone.id, current_rec.id)
+
+        # Create new records (after deletes to avoid CNAME conflicts)
+        for desired_rec in to_create:
+            desc = f"{desired_rec.type} {desired_rec.name} -> {desired_rec.value}"
+            result["created"].append(desc)
+            if not dry_run:
+                self.add_record(zone.id, desired_rec)
 
         return result
