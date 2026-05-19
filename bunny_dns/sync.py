@@ -84,6 +84,7 @@ class BunnySync:
                 "dns_records_deleted": 0,
                 "pull_zones_created": 0,
                 "pull_zones_updated": 0,
+                "pull_zones_deleted": 0,
                 "hostnames_added": 0,
                 "hostnames_removed": 0,
                 "edge_rules_created": 0,
@@ -147,6 +148,24 @@ class BunnySync:
                         pz_result["edge_rules"] = er_result
                         results["summary"]["edge_rules_created"] += len(er_result.get("created", []))
                         results["summary"]["edge_rules_deleted"] += len(er_result.get("deleted", []))
+
+            # Delete extra pull zones not in config
+            if delete_extra_records:
+                configured_pz_names = {
+                    name.lower() for name in pull_zones_config.keys()
+                }
+                remote_zones = self.pullzone_manager.get_zones_for_domain(domain_name)
+                for remote_zone in remote_zones:
+                    if remote_zone.name.lower() not in configured_pz_names:
+                        results["pull_zones"].append({
+                            "zone": remote_zone.name,
+                            "domain": domain_name,
+                            "deleted": True,
+                            "changes": [f"Deleting pull zone '{remote_zone.name}'"],
+                        })
+                        results["summary"]["pull_zones_deleted"] += 1
+                        if not dry_run:
+                            self.pullzone_manager.delete_zone(remote_zone.id)
 
         return results
 
@@ -368,6 +387,8 @@ def print_results(results: dict) -> None:
             print(f"\n  {zone['zone']}:")
             if zone.get("created"):
                 print("    [NEW ZONE CREATED]")
+            if zone.get("deleted"):
+                print("    [ZONE DELETED]")
             if zone.get("updated"):
                 print("    [ZONE UPDATED]")
             for change in zone.get("changes", []):
@@ -390,7 +411,8 @@ def print_results(results: dict) -> None:
               f"{s['dns_records_updated']} updated, "
               f"{s['dns_records_deleted']} deleted")
         print(f"  Pull zones: {s['pull_zones_created']} created, "
-              f"{s['pull_zones_updated']} updated")
+              f"{s['pull_zones_updated']} updated, "
+              f"{s['pull_zones_deleted']} deleted")
         print(f"  Hostnames: {s['hostnames_added']} added, "
               f"{s['hostnames_removed']} removed")
         print(f"  Edge rules: {s['edge_rules_created']} created, "

@@ -486,6 +486,7 @@ class TestPrintResults:
                 "dns_records_deleted": 0,
                 "pull_zones_created": 1,
                 "pull_zones_updated": 0,
+                "pull_zones_deleted": 0,
                 "hostnames_added": 2,
                 "hostnames_removed": 1,
                 "edge_rules_created": 3,
