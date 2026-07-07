@@ -103,17 +103,16 @@ class BunnySync:
         for domain_name, domain_config in domains_config.items():
             # Sync DNS records for this domain
             dns_records = domain_config.get("dns_records", [])
-            if dns_records:
-                result = self.dns_manager.sync_zone(
-                    domain=domain_name,
-                    desired_records=dns_records,
-                    dry_run=dry_run,
-                    delete_extra=delete_extra_records,
-                )
-                results["dns_zones"].append(result)
-                results["summary"]["dns_records_created"] += len(result.get("created", []))
-                results["summary"]["dns_records_updated"] += len(result.get("updated", []))
-                results["summary"]["dns_records_deleted"] += len(result.get("deleted", []))
+            result = self.dns_manager.sync_zone(
+                domain=domain_name,
+                desired_records=dns_records,
+                dry_run=dry_run,
+                delete_extra=delete_extra_records,
+            )
+            results["dns_zones"].append(result)
+            results["summary"]["dns_records_created"] += len(result.get("created", []))
+            results["summary"]["dns_records_updated"] += len(result.get("updated", []))
+            results["summary"]["dns_records_deleted"] += len(result.get("deleted", []))
 
             # Sync Pull Zones for this domain
             pull_zones_config = domain_config.get("pull_zones", {})
@@ -188,14 +187,13 @@ class BunnySync:
 
         for domain_name, domain_config in domains_config.items():
             dns_records = domain_config.get("dns_records", [])
-            if dns_records:
-                result = self.dns_manager.sync_zone(
-                    domain=domain_name,
-                    desired_records=dns_records,
-                    dry_run=dry_run,
-                    delete_extra=delete_extra_records,
-                )
-                results["dns_zones"].append(result)
+            result = self.dns_manager.sync_zone(
+                domain=domain_name,
+                desired_records=dns_records,
+                dry_run=dry_run,
+                delete_extra=delete_extra_records,
+            )
+            results["dns_zones"].append(result)
 
         return results
 

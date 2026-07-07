@@ -11,6 +11,7 @@ env/
 
 # Config with secrets
 config.json
+config.json.copy
 
 # IDE/Editor
 .idea/

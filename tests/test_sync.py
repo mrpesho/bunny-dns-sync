@@ -545,7 +545,9 @@ class TestIntegration:
 
         result = bunny_sync.sync(config)
 
-        bunny_sync.dns_manager.sync_zone.assert_not_called()
+        bunny_sync.dns_manager.sync_zone.assert_called_once_with(
+            domain="example.com", desired_records=[], dry_run=False, delete_extra=True,
+        )
         bunny_sync.pullzone_manager.sync_zone.assert_called_once()
 
     def test_domain_without_pull_zones(self, bunny_sync):
